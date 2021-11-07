@@ -65,6 +65,50 @@ namespace Day20_MSTest_MoodAnalyser_Assign
 
             }
         }
+
+
+        //below code is UC6
+
+
+        public static string InvokeAnalyserMood(string message, string methodName)
+        {
+            try
+            {
+                Type type = Type.GetType("Day20_MoodAnalyser_Test_Assignment.MoodAnalyser");
+                object moodAnalyserObject = MoodAnalyserFactory.CreateMoodAnalyseUsingParameterizedConstructor("Day20_MoodAnalyser_Test_Assignment.MoodAnalyser", "MoodAnalyser", message);
+                MethodInfo analyseMoodInfo = type.GetMethod(methodName);
+                object mood = analyseMoodInfo.Invoke(moodAnalyserObject, null);
+                return mood.ToString();
+            }
+            catch (NullReferenceException)
+            {
+                throw new MoodAnalyserCustomException(MoodAnalyserCustomException.ExceptionType.NO_SUCH_METHOD, "Method is Not Found");
+            }
+        }
+
+
+        //below code is UC7
+
+
+        public static string SetField(string message, string fieldName)
+        {
+            try
+            {
+                MoodAnalyser1 moodAnalyser = new MoodAnalyser1();
+                Type type = typeof(MoodAnalyser1);
+                FieldInfo field = type.GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
+                if (message == null)
+                {
+                    throw new MoodAnalyserCustomException(MoodAnalyserCustomException.ExceptionType.NO_SUCH_FIELD, "Message should not be null");
+                }
+                field.SetValue(moodAnalyser, message);
+                return moodAnalyser.Message;
+            }
+            catch (NullReferenceException)
+            {
+                throw new MoodAnalyserCustomException(MoodAnalyserCustomException.ExceptionType.NO_SUCH_FIELD, "Field is not Found");
+            }
+        }
     }
 
 
